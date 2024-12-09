@@ -52,12 +52,22 @@ async function getData(eventUrl: string, userName: string){
 }
 
 
-export default async function BookingFormRoute({params, searchParams}:{params: {username: string, eventURL: string}; searchParams: {date?: string, time?: string}}){
+export default async function BookingFormRoute({params, searchParams}:{
+    params: Promise<{ username: string; eventUrl: string }>;
+    searchParams: Promise<{ date?: string; time?: string }>
+}){
     
-    const { eventURL, username } = await params;
-    const data = await getData(eventURL, username);
-    
-    const {date, time} = await searchParams;
+      // Await the params and searchParams to resolve them before accessing their properties
+    const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
+
+    const { username, eventUrl } = resolvedParams;
+    const { date, time } = resolvedSearchParams;
+
+    // Fetch the necessary data
+    const data = await getData(eventUrl, username);
+
+    // Process the selected date
     const selectedDate = date ? new Date(date) : new Date();
     const formattedDate = new Intl.DateTimeFormat("en-US", {
         weekday: "long",
@@ -65,8 +75,8 @@ export default async function BookingFormRoute({params, searchParams}:{params: {
         month: "long",
     }).format(selectedDate);
 
-    const showForm = !!date && !! time;
-
+    // Show the form only if date and time are provided
+    const showForm = !!date && !!time;
 
 
     return(
@@ -111,7 +121,6 @@ export default async function BookingFormRoute({params, searchParams}:{params: {
                         <input type="hidden" name="meetingLength" value={data.duration}/>
                         <input type="hidden" name="provider" value={data.videoCallSoftware}/>
                         <input type="hidden" name="username" value={username}/>
-                        <input type="hidden" name="fromTime" value={time}/>
                         <input type="hidden" name="eventTypeId" value={data.id}/>
 
                         <div className="flex flex-col gap-y-2">
