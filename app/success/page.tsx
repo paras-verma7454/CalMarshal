@@ -20,7 +20,7 @@ export default function SuccessRoute() {
             </h1>
 
             <p className="text-sm text-muted-foreground text-center mt-1">
-              We emailed you and the other attendees a calendar invitation with
+              We emailed the other attendee a calendar invitation with
               all the details.
             </p>
 
