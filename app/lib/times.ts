@@ -190,5 +190,5 @@ export const times = [
     {
       id: 47,
       time: "23:30",
-    },
+    }
   ];
