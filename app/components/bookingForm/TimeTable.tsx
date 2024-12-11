@@ -1,5 +1,6 @@
 import prisma from "@/app/lib/db";
 import { nylas } from "@/app/lib/nylas";
+import convertTime12Hrs from "@/app/lib/TimeChange";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Prisma } from "@prisma/client";
@@ -140,7 +141,7 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                           <Button variant="outline" className="w-full mb-2 ">
-                            {slot}
+                            {convertTime12Hrs(slot)}
                           </Button>
                         </Link>
                       ))

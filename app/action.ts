@@ -104,7 +104,6 @@ export async function SettingsAction(prevState: any,formdata: FormData) {
 }
 
 export async function UpdateAvalabiltyAction(formdata: FormData) {
-    const session= await requireUser();
     const rawData=  Object.fromEntries(formdata.entries());
     const availabilityData = Object.keys(rawData).filter((key)=> key.startsWith("id-")).map((key)=>{
         const id= key.replace("id-","")
@@ -133,7 +132,7 @@ export async function UpdateAvalabiltyAction(formdata: FormData) {
 
         revalidatePath("/dashboard/availability");
     }catch(e){
-        console.log(e);
+        console.log("Error",e);
     }
 }
 

@@ -2,6 +2,7 @@ import { UpdateAvalabiltyAction } from "@/app/action";
 import { SubmitButton } from "@/app/components/SubmitButtons";
 import prisma from "@/app/lib/db";
 import { requireUser } from "@/app/lib/hooks";
+import convertTime12Hrs from "@/app/lib/TimeChange";
 import { times } from "@/app/lib/times";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -61,7 +62,7 @@ export default async function AvailabilityRoute() {
                                                {times.map((time)=>{
                                                 return(
                                                     <SelectItem value={time.time} key={time.id}>
-                                                        {time.time}
+                                                        {convertTime12Hrs( time.time)}
                                                     </SelectItem>
                                                 )
                                                })}
@@ -78,7 +79,7 @@ export default async function AvailabilityRoute() {
                                                {times.map((time)=>{
                                                 return(
                                                     <SelectItem value={time.time} key={time.id}>
-                                                        {time.time}
+                                                        {convertTime12Hrs(time.time)}
                                                     </SelectItem>
                                                 )
                                                })}

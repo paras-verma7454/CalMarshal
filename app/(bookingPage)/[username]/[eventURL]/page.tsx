@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { CalendarX2, Clock, VideoIcon } from "lucide-react";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 
@@ -85,7 +86,7 @@ export default async function BookingFormRoute({params, searchParams}:{
                 <Card className="max-w-[800px] w-full">
                 <CardContent className="p-5 md:grid md:grid-cols-[1fr,auto,1fr] md:gap-4">
                     <div>
-                        <img src={data.user.image as string} alt="Profile Image" className="size-20 rounded-xl"/>
+                        <Image src={data.user.image as string} alt="Profile Image" className="size-20 rounded-xl"/>
                         <p className="text-sm font-medium text-muted-foreground mt-1 ">{data.user.name}</p>
                         <Separator className="mt-2"/>
                         <h1 className="text-xl font-semibold mt-2 ">{data.title}</h1>
@@ -140,7 +141,7 @@ export default async function BookingFormRoute({params, searchParams}:{
                 <Card className="max-w-[1000px] w-full mx-auto">
                 <CardContent className="p-5 md:grid md:grid-cols-[1fr,auto,1fr,auto,1fr] md:gap-4">
                     <div>
-                        <img src={data.user.image as string} alt="Profile Image" className="size-20 rounded-xl"/>
+                        <Image src={data.user.image as string} alt="Profile Image" className="size-20 rounded-xl"/>
                         <p className="text-sm font-medium text-muted-foreground mt-1 ">{data.user.name}</p>
                         <Separator className="mt-2"/>
                         <h1 className="text-xl font-semibold mt-2 ">{data.title}</h1>
