@@ -4,10 +4,10 @@ import prisma from "./lib/db"
 import { requireUser } from "./lib/hooks"
 import { parseWithZod } from '@conform-to/zod';
 import { eventTypeSchema, onboardingSchemaValidation, settingsSchema } from "./lib/zodSchema";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { nylas } from "./lib/nylas";
-import { useRouter } from "next/router";
+
 
 const router = useRouter();
 export async function OnboardingAction(prevState: any,formdata: FormData) {
