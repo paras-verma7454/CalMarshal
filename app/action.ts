@@ -312,10 +312,6 @@ export async function UpdateEventTypeStatusAction(prevState: any,{eventTypeId, i
 export async function DeleteEventTypeAction(formdata: FormData) {
     const session = await requireUser();
 
-    // Validate that the user is authorized to delete the event type
-    if (!session || session.user?.id !== formdata.get("userId")) {
-        throw new Error("Unauthorized action");
-    }
 
     try {
         await prisma.eventType.delete({
