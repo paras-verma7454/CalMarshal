@@ -309,16 +309,26 @@ export async function UpdateEventTypeStatusAction(prevState: any,{eventTypeId, i
     }
 }
 
-export async function DeleteEventTypeAction(formdata: FormData){
+export async function DeleteEventTypeAction(formdata: FormData) {
     const session = await requireUser();
 
-    const data = await prisma.eventType.delete({
-        where:{
-            id: formdata.get("id") as string,
-            userId: session.user?.id
-        }
+    // Validate that the user is authorized to delete the event type
+    if (!session || session.user?.id !== formdata.get("userId")) {
+        throw new Error("Unauthorized action");
+    }
 
-    })
+    try {
+        await prisma.eventType.delete({
+            where: {
+                id: formdata.get("id") as string,
+                userId: session.user?.id
+            }
+        });
 
-    return redirect("/dashboard");
+        // Redirect to the dashboard upon successful deletion
+        return redirect("/dashboard");
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to delete the event type");
+    }
 }
