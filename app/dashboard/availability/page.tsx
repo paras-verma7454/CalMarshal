@@ -19,7 +19,11 @@ async function getData(userId: string){
     if(!data){
         return notFound();
     }
-
+    data.sort((a, b) => {
+        const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        return daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
+    });
+    
     return data;
 }
 export default async function AvailabilityRoute() {
@@ -27,10 +31,7 @@ export default async function AvailabilityRoute() {
     const session =await requireUser();
     const data= await getData(session.user?.id as string);
     
-    data.sort((a, b) => {
-        const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        return daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
-    });
+    
 
     return (
         <div>
