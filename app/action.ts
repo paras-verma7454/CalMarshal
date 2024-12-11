@@ -7,8 +7,9 @@ import { eventTypeSchema, onboardingSchemaValidation, settingsSchema } from "./l
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { nylas } from "./lib/nylas";
+import { useRouter } from "next/router";
 
-
+const router = useRouter();
 export async function OnboardingAction(prevState: any,formdata: FormData) {
     const session= await requireUser();
     
@@ -157,7 +158,7 @@ export async function CreateEventTypeAction(prevState: any,formdata: FormData) {
         }
     })
 
-    return redirect('/dashboard');
+    return router.push('/dashboard');
 }
 
 export async function CreateMeetingAction(formdata: FormData) {
@@ -320,5 +321,5 @@ export async function DeleteEventTypeAction(formdata: FormData){
 
     })
 
-    return redirect("/dashboard");
+    return router.push('/dashboard');
 }
