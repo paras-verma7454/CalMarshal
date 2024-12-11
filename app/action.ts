@@ -4,12 +4,10 @@ import prisma from "./lib/db"
 import { requireUser } from "./lib/hooks"
 import { parseWithZod } from '@conform-to/zod';
 import { eventTypeSchema, onboardingSchemaValidation, settingsSchema } from "./lib/zodSchema";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { nylas } from "./lib/nylas";
 
-
-const router = useRouter();
 export async function OnboardingAction(prevState: any,formdata: FormData) {
     const session= await requireUser();
     
@@ -158,7 +156,7 @@ export async function CreateEventTypeAction(prevState: any,formdata: FormData) {
         }
     })
 
-    return router.push('/dashboard');
+    return redirect('/dashboard');
 }
 
 export async function CreateMeetingAction(formdata: FormData) {
@@ -321,5 +319,5 @@ export async function DeleteEventTypeAction(formdata: FormData){
 
     })
 
-    return router.push('/dashboard');
+    return redirect('/dashboard');
 }
