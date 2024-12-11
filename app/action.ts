@@ -312,17 +312,13 @@ export async function UpdateEventTypeStatusAction(prevState: any,{eventTypeId, i
 export async function DeleteEventTypeAction(formdata: FormData){
     const session = await requireUser();
 
-    try{
-        const data = await prisma.eventType.delete({
-            where:{
-                id: formdata.get("id") as string,
-                userId: session.user?.id
-            }
-    
-        })
-    
-        return redirect("/dashboard");
-    }catch (err) {
-        console.log("Error occurred");
-    }
+    const data = await prisma.eventType.delete({
+        where:{
+            id: formdata.get("id") as string,
+            userId: session.user?.id
+        }
+
+    })
+
+    return redirect("/dashboard");
 }

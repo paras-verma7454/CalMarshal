@@ -11,7 +11,7 @@ export default async function DeleteEventType({params}:{params:Promise<{eventTyp
         <div className="flex flex-1 items-center justify-center">
             <Card>
                 <CardHeader>
-                    <CardTitle>Delete Evemt Type</CardTitle>
+                    <CardTitle>Delete Event Type</CardTitle>
                     <CardDescription>
                         Are you sure you want to delete this event type?
                     </CardDescription>
