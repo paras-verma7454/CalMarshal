@@ -69,63 +69,59 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
 ){
     const now = new Date();
 
-    // Determine user's time zone and adjust if necessary
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log("User TimeZone:", userTimeZone);
-
-    const adjustForUTC = (date: Date): Date => {
-        if (userTimeZone === "UTC") {
-            const asiaKolkataOffset = 5 * 60 + 30; // Offset in minutes (5 hours 30 minutes)
-            return addMinutes(date, asiaKolkataOffset);
+    const availableFrom = parse(
+        `${date} ${dbAvailability.fromTime}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
+    )
+    const availableTill = parse(
+        `${date} ${dbAvailability.tillTime}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
+    );
+    
+    // @ts-expect-error
+    const busySlots = nylasData.data[0].timeSlots.map((slot)=>(
+        {
+            start: fromUnixTime(slot.startTime),
+            end: fromUnixTime(slot.endTime)
         }
-        return date; // No adjustment needed for Asia/Kolkata
-    };
+    ))
 
-    const availableFrom = adjustForUTC(
-        parse(`${date} ${dbAvailability.fromTime}`, "yyyy-MM-dd HH:mm", new Date())
-    );
-    const availableTill = adjustForUTC(
-        parse(`${date} ${dbAvailability.tillTime}`, "yyyy-MM-dd HH:mm", new Date())
-    );
-
-    // Convert Nylas busy slots to Date objects
-    // @ts-ignore
-    const busySlots = nylasData.data[0].timeSlots.map((slot) => ({
-        start: adjustForUTC(fromUnixTime(slot.startTime)),
-        end: adjustForUTC(fromUnixTime(slot.endTime)),
-    }));
-
-    const allSlots = [];
+    const allSlots = []
     let currentSlot = availableFrom;
-    while (isBefore(currentSlot, availableTill)) {
-        allSlots.push(currentSlot);
-        currentSlot = addMinutes(currentSlot, duration);
+    while(isBefore(currentSlot, availableTill)){
+        allSlots.push(currentSlot)
+        currentSlot = addMinutes(currentSlot, duration)
     }
 
-    // Filter free slots by excluding busy ones
-    const freeSlots = allSlots.filter((slot) => {
-        const slotEnd = addMinutes(slot, duration);
+    const freeSlots= allSlots.filter((slot)=>{
+        const slotEnd = addMinutes(slot, duration)
 
         return (
-            isAfter(slot, now) &&
+            isAfter(slot, now) && 
             !busySlots.some(
-                (busy: { start: Date; end: Date }) =>
-                    (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
-                    (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
-                    (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
+                (busy: { start: any; end: any }) =>
+                (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
+                (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
+                (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
             )
-        );
-    });
+        )
+    })
 
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log("userTimeZone: ", userTimeZone);
+    
     const formattedFreeSlots = freeSlots.map((slot) => {
-        const formattedTime = format(slot, "HH:mm"); // Format to 24-hour time
-        return convertTime12Hrs(formattedTime); // Convert to 12-hour format
+        // Convert slot to Asia/Kolkata time zone
+        const localTime = new Date(slot).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+        const formattedTime = format(new Date(localTime), "HH:mm"); // Format to 24-hour time
+        return convertTime12Hrs(formattedTime);      // Convert to 12-hour format
     });
+    
+    console.log("Free Slots (Asia/Kolkata HH:mm):", formattedFreeSlots);
 
-    console.log("Free Slots (HH:mm):", formattedFreeSlots);
-
-    return freeSlots.map((slot) => format(slot, "HH:mm"));
-
+    return formattedFreeSlots.map((slot) => slot);
 }
 
 export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
@@ -157,7 +153,7 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                           <Button variant="outline" className="w-full mb-2 ">
-                            {convertTime12Hrs(slot)}
+                            {slot}
                           </Button>
                         </Link>
                       ))
