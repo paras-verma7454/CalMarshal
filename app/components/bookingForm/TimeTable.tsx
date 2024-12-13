@@ -108,6 +108,12 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
             )
         )
     })
+    const formattedFreeSlots = freeSlots.map((slot) => {
+        const formattedTime = format(slot, "HH:mm"); // Format to 24-hour time
+        return convertTime12Hrs(formattedTime);      // Convert to 12-hour format
+    });
+
+    console.log("Free Slots (HH:mm):", formattedFreeSlots);
 
     return freeSlots.map((slot) => format(slot, "HH:mm"));
 }
