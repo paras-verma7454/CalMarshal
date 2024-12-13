@@ -111,11 +111,6 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
 
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     console.log("userTimeZone: ", userTimeZone);
-    const formattedFreeSlots = freeSlots.map((slot) => {
-        const formattedTime = format(slot, "hh:mm a"); // Format to 12-hour time with AM/PM
-        return formattedTime;
-    });
-    console.log("Free Slots (HH:mm):", formattedFreeSlots);
     
     const formattedFreeSlots = freeSlots.map((slot) => {
         const formattedTime = format(slot, "HH:mm"); // Format to 24-hour time
