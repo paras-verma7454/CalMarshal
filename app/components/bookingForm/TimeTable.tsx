@@ -113,13 +113,15 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
     console.log("userTimeZone: ", userTimeZone);
     
     const formattedFreeSlots = freeSlots.map((slot) => {
-        const formattedTime = format(slot, "HH:mm"); // Format to 24-hour time
+        // Convert slot to Asia/Kolkata time zone
+        const localTime = new Date(slot).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+        const formattedTime = format(new Date(localTime), "HH:mm"); // Format to 24-hour time
         return convertTime12Hrs(formattedTime);      // Convert to 12-hour format
     });
+    
+    console.log("Free Slots (Asia/Kolkata HH:mm):", formattedFreeSlots);
 
-    console.log("Free Slots (HH:mm):", formattedFreeSlots);
-
-    return freeSlots.map((slot) => format(slot, "HH:mm"));
+    return formattedFreeSlots.map((slot) => slot);
 }
 
 export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
@@ -151,7 +153,7 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                           <Button variant="outline" className="w-full mb-2 ">
-                            {convertTime12Hrs(slot)}
+                            {slot}
                           </Button>
                         </Link>
                       ))
