@@ -67,7 +67,11 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
 }, nylasData:NylasResponse<GetFreeBusyResponse[]>,
     duration : number 
 ){
-    const now = new Date();
+    let now = new Date();
+
+    // Convert current UTC time to IST
+    const asiaKolkataOffset = 5 * 60 + 30; // Offset in minutes (5 hours 30 minutes)
+    now = addMinutes(now, asiaKolkataOffset);
 
     const availableFrom = parse(
         `${date} ${dbAvailability.fromTime}`,
