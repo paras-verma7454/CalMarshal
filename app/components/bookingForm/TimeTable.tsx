@@ -61,67 +61,57 @@ interface iAppProps{
     meetingDuration: number;
 }
 
-function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
-    fromTime:string | undefined;
+function calucalteAvailableTimeSlots(
+  date: string,
+  dbAvailablity: {
+    fromTime: string | undefined;
     tillTime: string | undefined;
-}, nylasData:NylasResponse<GetFreeBusyResponse[]>,
-    duration : number 
-){
-    const now = new Date();
+  },
+  nylasData: NylasResponse<GetFreeBusyResponse[]>,
+  duration: number
+) {
+  const now = new Date();
 
-    const availableFrom = parse(
-        `${date} ${dbAvailability.fromTime}`,
-        "yyyy-MM-dd HH:mm",
-        new Date()
-    )
-    const availableTill = parse(
-        `${date} ${dbAvailability.tillTime}`,
-        "yyyy-MM-dd HH:mm",
-        new Date()
+  const availableFrom = parse(
+    `${date} ${dbAvailablity.fromTime}`,
+    "yyyy-MM-dd HH:mm",
+    new Date()
+  );
+
+  const availableTill = parse(
+    `${date} ${dbAvailablity.tillTime}`,
+    "yyyy-MM-dd HH:mm",
+    new Date()
+  );
+
+  //@ts-ignore
+  const busySlots = nylasData.data[0].timeSlots.map((slot) => ({
+    start: fromUnixTime(slot.startTime),
+    end: fromUnixTime(slot.endTime),
+  }));
+
+  const allSlots = [];
+  let currentSlot = availableFrom;
+  while (isBefore(currentSlot, availableTill)) {
+    allSlots.push(currentSlot);
+    currentSlot = addMinutes(currentSlot, duration);
+  }
+
+  const freeSlots = allSlots.filter((slot) => {
+    const slotEnd = addMinutes(slot, duration);
+
+    return (
+      isAfter(slot, now) &&
+      !busySlots.some(
+        (busy: { start: any; end: any }) =>
+          (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
+          (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
+          (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
+      )
     );
-    
-    // @ts-expect-error
-    const busySlots = nylasData.data[0].timeSlots.map((slot)=>(
-        {
-            start: fromUnixTime(slot.startTime),
-            end: fromUnixTime(slot.endTime)
-        }
-    ))
+  });
 
-    const allSlots = []
-    let currentSlot = availableFrom;
-    while(isBefore(currentSlot, availableTill)){
-        allSlots.push(currentSlot)
-        currentSlot = addMinutes(currentSlot, duration)
-    }
-
-    const freeSlots= allSlots.filter((slot)=>{
-        const slotEnd = addMinutes(slot, duration)
-
-        return (
-            isAfter(slot, now) && 
-            !busySlots.some(
-                (busy: { start: any; end: any }) =>
-                (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
-                (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
-                (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
-            )
-        )
-    })
-
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log("userTimeZone: ", userTimeZone);
-    
-    const formattedFreeSlots = freeSlots.map((slot) => {
-        // Convert slot to Asia/Kolkata time zone
-        const localTime = new Date(slot).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-        const formattedTime = format(new Date(localTime), "HH:mm"); // Format to 24-hour time
-        return convertTime12Hrs(formattedTime);      // Convert to 12-hour format
-    });
-    
-    console.log("Free Slots (Asia/Kolkata HH:mm):", formattedFreeSlots);
-
-    return freeSlots.map((slot) => slot);
+  return freeSlots.map((slot) => format(slot, "HH:mm"));
 }
 
 export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
