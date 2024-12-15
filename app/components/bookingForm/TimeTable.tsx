@@ -61,57 +61,64 @@ interface iAppProps{
     meetingDuration: number;
 }
 
-function CalculateAvailableTimeSlots(
-  date: string,
-  dbAvailablity: {
-    fromTime: string | undefined;
+function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
+    fromTime:string | undefined;
     tillTime: string | undefined;
-  },
-  nylasData: NylasResponse<GetFreeBusyResponse[]>,
-  duration: number
-) {
-  const now = new Date();
-  console.log("now",convertTime12Hrs( format(now,"HH:mm")))
-  const availableFrom = parse(
-    `${date} ${dbAvailablity.fromTime}`,
-    "yyyy-MM-dd HH:mm",
-    new Date()
-  );
+}, nylasData:NylasResponse<GetFreeBusyResponse[]>,
+    duration : number 
+){
+    let now = new Date();
 
-  const availableTill = parse(
-    `${date} ${dbAvailablity.tillTime}`,
-    "yyyy-MM-dd HH:mm",
-    new Date()
-  );
+    // Check the user's time zone and convert UTC to IST if necessary
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (userTimeZone === "UTC") {
+        const asiaKolkataOffset = 5 * 60 +30 ; // Offset in minutes (5 hours 30 minutes)
+        now = addMinutes(now, asiaKolkataOffset);
+    }
 
-  //@ts-ignore
-  const busySlots = nylasData.data[0].timeSlots.map((slot) => ({
-    start: fromUnixTime(slot.startTime),
-    end: fromUnixTime(slot.endTime),
-  }));
+    console.log("now", format(now, "yyyy-MM-dd HH:mm"));
 
-  const allSlots = [];
-  let currentSlot = availableFrom;
-  while (isBefore(currentSlot, availableTill)) {
-    allSlots.push(currentSlot);
-    currentSlot = addMinutes(currentSlot, duration);
-  }
-
-  const freeSlots = allSlots.filter((slot) => {
-    const slotEnd = addMinutes(slot, duration);
-
-    return (
-      isAfter(slot, now) &&
-      !busySlots.some(
-        (busy: { start: any; end: any }) =>
-          (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
-          (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
-          (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
-      )
+    const availableFrom = parse(
+        `${date} ${dbAvailability.fromTime}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
+    )
+    const availableTill = parse(
+        `${date} ${dbAvailability.tillTime}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
     );
-  });
+    
+    // @ts-expect-error
+    const busySlots = nylasData.data[0].timeSlots.map((slot)=>(
+        {
+            start: fromUnixTime(slot.startTime),
+            end: fromUnixTime(slot.endTime)
+        }
+    ))
 
-  return freeSlots.map((slot) => format(slot, "HH:mm"));
+    const allSlots = []
+    let currentSlot = availableFrom;
+    while(isBefore(currentSlot, availableTill)){
+        allSlots.push(currentSlot)
+        currentSlot = addMinutes(currentSlot, duration)
+    }
+
+    const freeSlots= allSlots.filter((slot)=>{
+        const slotEnd = addMinutes(slot, duration)
+
+        return (
+            isAfter(slot, now) && 
+            !busySlots.some(
+                (busy: { start: any; end: any }) =>
+                (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
+                (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
+                (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
+            )
+        )
+    })
+
+    return freeSlots.map((slot) => format(slot,"HH:mm"));
 }
 
 export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
@@ -143,7 +150,7 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                           <Button variant="outline" className="w-full mb-2 ">
-                            {slot}
+                            {convertTime12Hrs(slot)}
                           </Button>
                         </Link>
                       ))
