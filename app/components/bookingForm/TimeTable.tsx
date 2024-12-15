@@ -61,7 +61,7 @@ interface iAppProps{
     meetingDuration: number;
 }
 
-function calucalteAvailableTimeSlots(
+function CalculateAvailableTimeSlots(
   date: string,
   dbAvailablity: {
     fromTime: string | undefined;
