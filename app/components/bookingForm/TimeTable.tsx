@@ -67,7 +67,16 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
 }, nylasData:NylasResponse<GetFreeBusyResponse[]>,
     duration : number 
 ){
-    const now = new Date();
+    let now = new Date();
+
+    // Check the user's time zone and convert UTC to IST if necessary
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (userTimeZone === "UTC") {
+        const asiaKolkataOffset = 5 * 60 +30 ; // Offset in minutes (5 hours 30 minutes)
+        now = addMinutes(now, asiaKolkataOffset);
+    }
+
+    console.log("now", format(now, "yyyy-MM-dd HH:mm"));
 
     const availableFrom = parse(
         `${date} ${dbAvailability.fromTime}`,
@@ -109,19 +118,7 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
         )
     })
 
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log("userTimeZone: ", userTimeZone);
-    
-    const formattedFreeSlots = freeSlots.map((slot) => {
-        // Convert slot to Asia/Kolkata time zone
-        const localTime = new Date(slot).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-        const formattedTime = format(new Date(localTime), "HH:mm"); // Format to 24-hour time
-        return convertTime12Hrs(formattedTime);      // Convert to 12-hour format
-    });
-    
-    console.log("Free Slots (Asia/Kolkata HH:mm):", formattedFreeSlots);
-
-    return formattedFreeSlots.map((slot) => slot);
+    return freeSlots.map((slot) => format(slot,"HH:mm"));
 }
 
 export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
@@ -153,7 +150,7 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                           <Button variant="outline" className="w-full mb-2 ">
-                            {slot}
+                            {convertTime12Hrs(slot)}
                           </Button>
                         </Link>
                       ))
