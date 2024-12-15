@@ -121,7 +121,7 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
     
     console.log("Free Slots (Asia/Kolkata HH:mm):", formattedFreeSlots);
 
-    return formattedFreeSlots.map((slot) => slot);
+    return freeSlots.map((slot) => slot);
 }
 
 export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
