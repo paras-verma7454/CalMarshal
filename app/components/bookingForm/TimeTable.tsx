@@ -71,7 +71,7 @@ function CalculateAvailableTimeSlots(
   duration: number
 ) {
   const now = new Date();
-
+  console.log("now",convertTime12Hrs( format(now,"HH:mm")))
   const availableFrom = parse(
     `${date} ${dbAvailablity.fromTime}`,
     "yyyy-MM-dd HH:mm",
