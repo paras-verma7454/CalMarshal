@@ -29,50 +29,56 @@ export async function OnboardingAction(prevState: any,formdata: FormData) {
         return submission.reply()
     }
 
-    const data=  await prisma.user.update({
-        where:{
-            id: session.user?.id
+    const data = await prisma.user.update({
+        where: {
+          id: session.user?.id,
         },
-        data:{
-            username: submission.value.username,
-            name: submission.value.fullName,
-            availability:{
-                createMany:{
-                    data:[
-                        {
-                            day: 'Monday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        },{
-                            day: 'Tuesday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        },{
-                            day: 'Wednesday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        },{
-                            day: 'Thursday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        },{
-                            day: 'Friday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        },{
-                            day: 'Saturday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        },{
-                            day: 'Sunday',
-                            fromTime: '08:00',
-                            tillTime: '18:00'
-                        }
-                    ]
-                }
-            }
-        }
-    })
+        data: {
+          username: submission.value.username,
+          name: submission.value.fullName,
+          availability: {
+            createMany: {
+              data: [
+                {
+                  day: "Monday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+                {
+                  day: "Tuesday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+                {
+                  day: "Wednesday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+                {
+                  day: "Thursday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+                {
+                  day: "Friday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+                {
+                  day: "Saturday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+                {
+                  day: "Sunday",
+                  fromTime: "08:00",
+                  tillTime: "18:00",
+                },
+              ],
+            },
+          },
+        },
+    });
 
     return redirect('/onboarding/grant-id');
 }

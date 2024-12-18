@@ -10,23 +10,33 @@ import { Switch } from "@/components/ui/switch";
 import { notFound } from "next/navigation";
 
 
-async function getData(userId: string){
-    const data= await prisma.availability.findMany({
-        where:{
-            userId: userId
-        }
-    })
+async function getData(userId: string) {
+    const weekOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-    if(!data){
+    const data = await prisma.availability.findMany({
+        where: {
+            userId: userId
+        },
+        orderBy: {
+            // Use the day field to sort alphabetically
+            day: "asc"
+        }
+    });
+
+    if (!data) {
         return notFound();
     }
-    data.sort((a, b) => {
-        const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        return daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
+
+    // Sort the data by the custom week order
+    const sortedData = data.sort((a, b) => {
+        return weekOrder.indexOf(a.day) - weekOrder.indexOf(b.day);
     });
-    
-    return data;
+
+    // console.log(sortedData);
+
+    return sortedData;
 }
+
 export default async function AvailabilityRoute() {
 
     const session =await requireUser();
@@ -62,7 +72,7 @@ export default async function AvailabilityRoute() {
                                                {times.map((time)=>{
                                                 return(
                                                     <SelectItem value={time.time} key={time.id}>
-                                                        {convertTime12Hrs( time.time)}
+                                                        {convertTime12Hrs(time.time)}
                                                     </SelectItem>
                                                 )
                                                })}
