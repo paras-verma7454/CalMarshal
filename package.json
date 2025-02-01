@@ -24,6 +24,7 @@
     "@radix-ui/react-switch": "^1.1.1",
     "@react-spectrum/calendar": "^3.5.0",
     "@uploadthing/react": "^7.1.1",
+    "@vercel/analytics": "^1.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
