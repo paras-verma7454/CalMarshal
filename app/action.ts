@@ -162,7 +162,7 @@ export async function CreateEventTypeAction(prevState: any,formdata: FormData) {
         }
     })
 
-    return redirect('/dashboard');
+    return revalidatePath('/dashboard');
 }
 
 export async function CreateMeetingAction(formdata: FormData) {
