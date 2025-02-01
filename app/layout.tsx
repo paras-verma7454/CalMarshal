@@ -6,6 +6,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { Analytics } from "@vercel/analytics/react"
+import  image  from "@/public/image.png"
 
 
 const geistSans = localFont({
@@ -21,7 +22,21 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "CalMarshal",
-  description: "A Calendar Scheduling Platform",
+  description: "CalMarshal – A modern scheduling platform with seamless booking, real-time availability, and calendar integration.",
+  openGraph: {
+    title: "CalMarshal",
+    description: "A Calendar Scheduling Platform",
+    url: "https://cal-marshal-phi.vercel.app",
+    type: "website",
+    images: [
+      {
+        url: "/image.png",
+        width: 800,
+        height: 600,
+        alt: "CalMarshal ",
+      },
+    ],
+  }
 };
 
 export default function RootLayout({
