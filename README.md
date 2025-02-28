@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CalMarshal
+Built [CalMarshal](https://cal-marshal-phi.vercel.app/), a full-stack scheduling application inspired by Cal.com. Integrated features like OAuth authentication, dynamic booking forms, a custom built calendar, availability integration, and real-time event syncing
+
+ ![image](https://github.com/user-attachments/assets/f8156871-8d07-4023-86ff-f74791c92aab)
+
+ ![image](https://github.com/user-attachments/assets/3098525c-65f4-4026-a618-9797abb42a6d)
+
+![image](https://github.com/user-attachments/assets/e63e4ec8-7bc6-435e-91e8-115f56a4d5d9)
+
+![image](https://github.com/user-attachments/assets/a8e02626-fa8f-44bf-a16c-349f967a80dc)
+
 
 ## Getting Started
 
