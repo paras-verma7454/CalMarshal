@@ -39,7 +39,7 @@ export default async function MeetingsRoute(){
     
     const session = await requireUser();
     const data = await getData(session.user?.id as string);
-    // console.log(data.data[0].when)
+    // console.log("data", data.data[0])
     return(
         <>
             {data.data.length < 1 ? (
@@ -78,13 +78,21 @@ export default async function MeetingsRoute(){
                                         <div className="flex items-center mt-1">
                                             <Video className="size-4 mr-2 text-primary"/>
                                             {/* @ts-ignore */}
-                                            <a href={item.conferencing.details.url} target="_blank" className="text-xs text-primary underline underline-offset-4">Join Meeting</a>
+                                            {item.conferencing?.details?.url ? (
+                                                // @ts-ignore
+                                                <a href={item.conferencing?.details.url} target="_blank" className="text-xs text-primary underline underline-offset-4">
+                                                    Join Meeting
+                                                </a>
+                                            ) : (
+                                                <span className="text-red-500 text-xs">No Meeting Link</span>
+                                            )}
+
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col items-start">
                                         <h2 className="text-sm font-medium">{item.title}</h2>
-                                        <p className="text-sm text-muted-foreground">You and {item.participants[0].name}</p>
+                                        <p className="text-sm text-muted-foreground">You and {item.participants?.[0]?.name}</p>
                                     </div>
 
                                     <SubmitButton text="Cancel Event" variant="destructive" className="w-fit flex ml-auto"/>
