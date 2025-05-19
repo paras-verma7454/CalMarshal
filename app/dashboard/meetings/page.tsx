@@ -69,7 +69,7 @@ export default async function MeetingsRoute(){
                                         </p>
                                         <p className="text-muted-foreground text-xs pt-1">
                                             {/* @ts-ignore */}  
-                                            {item.when?.startTime && item.when?.endTime ? ( <> {format(fromUnixTime(item.when.startTime > 9999999999 ? item.when.startTime / 1000 : item.when.startTime), "hh:mm a")}  -  {format(fromUnixTime(item.when.endTime > 9999999999 ? item.when.endTime / 1000 : item.when.endTime), "hh:mm a")} </>
+                                            {item.when?.startTime && item.when?.endTime ? ( <> {format(fromUnixTime(item.when.startTime > 9999999999 ? item.when.startTime / 1000 : item.when.startTime), "HH:mm")}  -  {format(fromUnixTime(item.when.endTime > 9999999999 ? item.when.endTime / 1000 : item.when.endTime), "HH:mm")} </>
                                             ) : (
                                                 <span className="text-red-500">Invalid Time</span>
                                             )}
