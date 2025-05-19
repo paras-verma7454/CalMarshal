@@ -70,11 +70,11 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
     let now = new Date();
 
     // Check the user's time zone and convert UTC to IST if necessary
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (userTimeZone === "UTC") {
-        const asiaKolkataOffset = 5 * 60 +30 ; // Offset in minutes (5 hours 30 minutes)
-        now = addMinutes(now, asiaKolkataOffset);
-    }
+    // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // if (userTimeZone === "UTC") {
+    //     const asiaKolkataOffset = 5 * 60 +30 ; // Offset in minutes (5 hours 30 minutes)
+    //     now = addMinutes(now, asiaKolkataOffset);
+    // }
 
     console.log("now", format(now, "yyyy-MM-dd HH:mm"));
 
@@ -150,7 +150,8 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                           <Button variant="outline" className="w-full mb-2 ">
-                            {convertTime12Hrs(slot)}
+{/*                             {convertTime12Hrs(slot)} */}
+                              {slot}
                           </Button>
                         </Link>
                       ))
