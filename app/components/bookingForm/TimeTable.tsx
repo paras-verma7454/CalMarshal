@@ -143,7 +143,7 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
             {format(selectedDate, "EEE")}{" "}
             <span className="text-sm text-muted-foreground">{format(selectedDate, "MMM d")}</span>
             </p>
-                <p className="text-sm text-primary font-semibold mt-2">Available Time Slots in IST</p>
+                <p className="text-sm text-primary font-semibold mt-2">Available Time Slots in UTC timezone</p>
                 <Separator/>
             <div className="mt-3 max-h-[350px] overflow-y-auto scroll-area pr-2">
                 {availableSlots.length > 0 ? (
