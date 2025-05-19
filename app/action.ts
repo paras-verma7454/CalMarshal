@@ -196,8 +196,8 @@ export async function CreateMeetingAction(formdata: FormData) {
 
     const meetingLength= Number(formdata.get('meetingLength'));
     const provider = formdata.get('provider') as string;
-
-    const startDateTime = new Date(`${eventDate}T${fromTime}:00`);
+// :00
+    const startDateTime = new Date(`${eventDate}T${fromTime}`);
     console.log("startDateTime: ",startDateTime);
     const endDateTime = new Date(startDateTime.getTime() + meetingLength * 60000);
 
