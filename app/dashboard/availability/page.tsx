@@ -72,7 +72,8 @@ export default async function AvailabilityRoute() {
                                                {times.map((time)=>{
                                                 return(
                                                     <SelectItem value={time.time} key={time.id}>
-                                                        {convertTime12Hrs(time.time)}
+{/*                                                         {convertTime12Hrs(time.time)} */}
+                                                        {time.time}
                                                     </SelectItem>
                                                 )
                                                })}
