@@ -48,7 +48,7 @@ export default function BookingClientWrapper({
           </SelectContent>
         </Select>
       </div>
-      <RenderCalendar availability={availability} />
+      <RenderCalendar availability={availability} timeZone={timeZone} />
     </div>
   );
 }
