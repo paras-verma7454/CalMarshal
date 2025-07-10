@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { nylas } from "./lib/nylas";
 import { toZonedTime, fromZonedTime } from "date-fns-tz";
+import { parse } from "date-fns";
 
 export async function OnboardingAction(prevState: any,formdata: FormData) {
     const session= await requireUser();
@@ -193,9 +194,10 @@ export async function CreateMeetingAction(formdata: FormData) {
     const fromTime = formdata.get('fromTime') as string;
     const eventDate = formdata.get('eventDate') as string;
     const timeZone = formdata.get('timeZone') as string || "UTC";
-    // Combine date and time in the selected time zone, then convert to UTC
-    const localDateTimeStr = `${eventDate}T${fromTime}`;
-    const startDateTime = fromZonedTime(localDateTimeStr, timeZone);
+    // Parse the time as if it's in the selected time zone
+    const localDate = parse(`${eventDate} ${fromTime}`, "yyyy-MM-dd HH:mm", new Date());
+    // Convert to UTC
+    const startDateTime = fromZonedTime(localDate, timeZone);
     const meetingLength= Number(formdata.get('meetingLength'));
     const provider = formdata.get('provider') as string;
 // :00
