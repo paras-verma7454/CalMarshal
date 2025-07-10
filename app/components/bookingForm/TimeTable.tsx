@@ -126,7 +126,8 @@ function CalculateAvailableTimeSlots(
 
     return freeSlots.map((slot) => {
         const zoned = toZonedTime(slot, timeZone);
-        return formatTz(zoned, "HH:mm", { timeZone });
+        const slot24 = formatTz(zoned, "HH:mm", { timeZone });
+        return slot24;
     });
 }
 
@@ -162,7 +163,7 @@ export async function TimeTable({ selectedDate, userName, meetingDuration, timeZ
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
                             <Button variant="outline" className="w-full mb-2 ">
-                                {slot}
+                                {convertTime12Hrs(slot)}
                             </Button>
                         </Link>
                     ))
