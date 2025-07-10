@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 
 export function Calendar(props: CalendarProps<DateValue> & {
   isDateUnavailable?: (date: DateValue)=> boolean;
+  timeZone?: string;
 }){
     const {locale} = useLocale();
     let state = useCalendarState({

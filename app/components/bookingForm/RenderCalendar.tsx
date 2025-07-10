@@ -18,13 +18,13 @@ interface iAppProps {
     }[];
 }
 
-export function RenderCalendar({ availability}: iAppProps){
+export function RenderCalendar({ availability, timeZone }: iAppProps & { timeZone: string }){
 
     const router = useRouter();
     const searchParams = useSearchParams();
     const [date, setDate] = useState(()=>{
         const dateParam = searchParams.get('date');
-        return dateParam ? parseDate(dateParam) : today(getLocalTimeZone());
+        return dateParam ? parseDate(dateParam) : today(timeZone);
     })
 
     useEffect(()=>{
@@ -42,7 +42,7 @@ export function RenderCalendar({ availability}: iAppProps){
     }
     const isDateUnavailable = (date: DateValue) => {
 
-        const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();
+        const dayOfWeek = date.toDate(timeZone).getDay();
         // Adjust the index to match the daysofWeek array
         const adjustedIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
         return !availability[adjustedIndex].isActive;
@@ -50,10 +50,11 @@ export function RenderCalendar({ availability}: iAppProps){
     
 
     return <Calendar
-     minValue={today(getLocalTimeZone())}
+     minValue={today(timeZone)}
      value={date}
      onChange={handleDateChange}
     //  defaultValue={today(getLocalTimeZone())}
      isDateUnavailable={isDateUnavailable}
+     timeZone={timeZone}
      />
 }
