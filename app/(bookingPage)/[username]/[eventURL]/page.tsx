@@ -124,6 +124,7 @@ export default async function BookingFormRoute({params, searchParams}:{
                         <input type="hidden" name="provider" value={data.videoCallSoftware}/>
                         <input type="hidden" name="username" value={username}/>
                         <input type="hidden" name="eventTypeId" value={data.id}/>
+                        <input type="hidden" name="timeZone" value={timeZone}/>
 
                         <div className="flex flex-col gap-y-2">
                             <Label>Your Name</Label>
