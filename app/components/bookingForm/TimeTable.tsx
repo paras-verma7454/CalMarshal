@@ -14,6 +14,7 @@ import {
 } from "date-fns";
 import Link from "next/link";
 import { NylasResponse, GetFreeBusyResponse } from "nylas";
+import { toZonedTime, format as formatTz } from "date-fns-tz";
 
 async function getData(userName : string, selectedDate : Date){
 
@@ -59,14 +60,19 @@ interface iAppProps{
     selectedDate: Date;
     userName: string;
     meetingDuration: number;
+    timeZone: string;
 }
 
-function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
-    fromTime:string | undefined;
-    tillTime: string | undefined;
-}, nylasData:NylasResponse<GetFreeBusyResponse[]>,
-    duration : number 
-){
+function CalculateAvailableTimeSlots(
+    date: string,
+    dbAvailability: {
+        fromTime: string | undefined;
+        tillTime: string | undefined;
+    },
+    nylasData: NylasResponse<GetFreeBusyResponse[]>,
+    duration: number,
+    timeZone: string
+) {
     let now = new Date();
 
     // Check the user's time zone and convert UTC to IST if necessary
@@ -82,7 +88,7 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
         `${date} ${dbAvailability.fromTime}`,
         "yyyy-MM-dd HH:mm",
         new Date()
-    )
+    );
     const availableTill = parse(
         `${date} ${dbAvailability.tillTime}`,
         "yyyy-MM-dd HH:mm",
@@ -118,10 +124,13 @@ function  CalculateAvailableTimeSlots(date :string, dbAvailability: {
         )
     })
 
-    return freeSlots.map((slot) => format(slot,"HH:mm"));
+    return freeSlots.map((slot) => {
+        const zoned = toZonedTime(slot, timeZone);
+        return formatTz(zoned, "HH:mm", { timeZone });
+    });
 }
 
-export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAppProps){
+export async function TimeTable({ selectedDate, userName, meetingDuration, timeZone }: iAppProps) {
 
     const {data, nylasCalendarData} =await getData(userName, selectedDate);
     const formattedDate= format(selectedDate,"yyyy-MM-dd")
@@ -133,34 +142,34 @@ export async  function TimeTable({ selectedDate, userName, meetingDuration}: iAp
         formattedDate,
         dbAvailability,
         nylasCalendarData,
-        meetingDuration
-    )
+        meetingDuration,
+        timeZone
+    );
     
 
     return (
         <div>
             <p className="text-base font-semibold">
-            {format(selectedDate, "EEE")}{" "}
-            <span className="text-sm text-muted-foreground">{format(selectedDate, "MMM d")}</span>
+                {format(selectedDate, "EEE")} {" "}
+                <span className="text-sm text-muted-foreground">{format(selectedDate, "MMM d")}</span>
             </p>
-                <p className="text-sm text-primary font-semibold mt-2">Available Time Slots in UTC timezone</p>
-                <Separator/>
+            <p className="text-sm text-primary font-semibold mt-2">
+                Available Time Slots in {timeZone}
+            </p>
+            <Separator />
             <div className="mt-3 max-h-[350px] overflow-y-auto scroll-area pr-2">
                 {availableSlots.length > 0 ? (
                     availableSlots.map((slot, index) => (
                         <Link key={index} href={`?date=${format(selectedDate, "yyyy-MM-dd")}&time=${slot}`} >
-                          <Button variant="outline" className="w-full mb-2 ">
-{/*                             {convertTime12Hrs(slot)} */}
-                              {slot}
-                          </Button>
+                            <Button variant="outline" className="w-full mb-2 ">
+                                {slot}
+                            </Button>
                         </Link>
-                      ))
+                    ))
                 ) : (
-                    <p>
-                        No available time slots for this date.
-                    </p>
+                    <p>No available time slots for this date.</p>
                 )}
             </div>
         </div>
-    )
+    );
 }

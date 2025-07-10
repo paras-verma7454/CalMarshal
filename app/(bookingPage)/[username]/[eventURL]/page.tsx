@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { CalendarX2, Clock, VideoIcon } from "lucide-react";
 import { notFound } from "next/navigation";
-
+import BookingClientWrapper from "@/app/components/bookingForm/BookingClientWrapper";
 
 
 async function getData(eventUrl: string, userName: string){
@@ -168,14 +168,12 @@ export default async function BookingFormRoute({params, searchParams}:{
                     </div>
 
                     <Separator orientation="vertical" />
-
-                    
-                    <RenderCalendar availability={data.user.availability}/>
-                    
-
-                    <Separator orientation="vertical" />
-                    <TimeTable selectedDate={selectedDate} userName={username} meetingDuration={data.duration}/>
-
+                    <BookingClientWrapper 
+                        availability={data.user.availability}
+                        selectedDate={selectedDate}
+                        userName={username}
+                        meetingDuration={data.duration}
+                    />
                 </CardContent>
             </Card>
              )}
