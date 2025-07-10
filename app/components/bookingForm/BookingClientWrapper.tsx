@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { RenderCalendar } from "./RenderCalendar";
-import { TimeTable } from "./TimeTable";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 
 const timeZones = [
@@ -17,17 +17,21 @@ const timeZones = [
 
 export default function BookingClientWrapper({
   availability,
-  selectedDate,
-  userName,
-  meetingDuration,
 }: {
   availability: { day: string; isActive: boolean }[];
-  selectedDate: Date;
-  userName: string;
-  meetingDuration: number;
 }) {
-  const localTz = typeof window !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : "UTC";
-  const [timeZone, setTimeZone] = useState(localTz);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [timeZone, setTimeZone] = useState(() =>
+    searchParams.get("timeZone") || Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+
+  useEffect(() => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("timeZone", timeZone);
+    router.replace(`?${params.toString()}`);
+    // eslint-disable-next-line
+  }, [timeZone]);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -45,12 +49,6 @@ export default function BookingClientWrapper({
         </Select>
       </div>
       <RenderCalendar availability={availability} />
-      <TimeTable
-        selectedDate={selectedDate}
-        userName={userName}
-        meetingDuration={meetingDuration}
-        timeZone={timeZone}
-      />
     </div>
   );
 }

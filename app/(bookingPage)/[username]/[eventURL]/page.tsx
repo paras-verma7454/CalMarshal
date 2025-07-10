@@ -54,7 +54,7 @@ async function getData(eventUrl: string, userName: string){
 
 export default async function BookingFormRoute({params, searchParams}:{
     params: Promise<{ username: string; eventUrl: string }>;
-    searchParams: Promise<{ date?: string; time?: string }>
+    searchParams: Promise<{ date?: string; time?: string; timeZone?: string }>
 }){
     
       // Await the params and searchParams to resolve them before accessing their properties
@@ -77,6 +77,8 @@ export default async function BookingFormRoute({params, searchParams}:{
 
     // Show the form only if date and time are provided
     const showForm = !!date && !!time;
+
+    const timeZone = resolvedSearchParams.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 
 
     return(
@@ -168,11 +170,13 @@ export default async function BookingFormRoute({params, searchParams}:{
                     </div>
 
                     <Separator orientation="vertical" />
-                    <BookingClientWrapper 
-                        availability={data.user.availability}
+                    <BookingClientWrapper availability={data.user.availability} />
+                    <Separator orientation="vertical" />
+                    <TimeTable
                         selectedDate={selectedDate}
                         userName={username}
                         meetingDuration={data.duration}
+                        timeZone={timeZone}
                     />
                 </CardContent>
             </Card>
