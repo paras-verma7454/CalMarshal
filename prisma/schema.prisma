@@ -70,11 +70,11 @@ model Availability{
   fromTime      String
   tillTime      String
   isActive      Boolean   @default(true)
+  timeZone      String    @default("UTC")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime @updatedAt
   User          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
-
 }
 
 enum Day {

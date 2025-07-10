@@ -8,9 +8,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { notFound } from "next/navigation";
+import { getLocalTimeZone } from "@internationalized/date";
 
+const timeZones = [
+  "UTC",
+  "America/New_York",
+  "Europe/London",
+  "Europe/Paris",
+  "Asia/Kolkata",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+  // ...add more as needed
+];
 
-async function getData(userId: string) {
+async function getData(userId: string): Promise<Array<{ id: string; day: string; fromTime: string; tillTime: string; isActive: boolean; createdAt: Date; updatedAt: Date; userId: string; timeZone: string }>> {
     const weekOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
     const data = await prisma.availability.findMany({
@@ -41,6 +52,8 @@ export default async function AvailabilityRoute() {
 
     const session =await requireUser();
     const data= await getData(session.user?.id as string);
+    // Fetch the user's time zone from the first availability row, or default to local
+    const userTimeZone = data[0]?.timeZone || getLocalTimeZone();
     
     
 
@@ -55,6 +68,21 @@ export default async function AvailabilityRoute() {
                 </CardHeader>
                 <form action={UpdateAvalabiltyAction}>
                     <CardContent className="flex flex-col gap-y-4 ">
+                        <div className="mb-4">
+                          <label className="block mb-1 font-medium">Time Zone</label>
+                          <Select name="timeZone" defaultValue={userTimeZone}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder={"Select time zone"}/>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {timeZones.map((tz) => (
+                                  <SelectItem value={tz} key={tz}>{tz}</SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
                         {data.map((item)=>{
                             return(
                                 <div key={item.id} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">

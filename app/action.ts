@@ -110,9 +110,9 @@ export async function SettingsAction(prevState: any,formdata: FormData) {
 
 export async function UpdateAvalabiltyAction(formdata: FormData) {
     const rawData=  Object.fromEntries(formdata.entries());
+    const timeZone = formdata.get("timeZone") as string;
     const availabilityData = Object.keys(rawData).filter((key)=> key.startsWith("id-")).map((key)=>{
         const id= key.replace("id-","")
-
         return{
             id,
             isActive:rawData[`isActive-${id}`] ==="on",
@@ -120,7 +120,6 @@ export async function UpdateAvalabiltyAction(formdata: FormData) {
             tillTime: rawData[`tillTime-${id}`] as string
         }
     })
-
     try{
         await prisma.$transaction(
              availabilityData.map((item)=> prisma.availability.update({
@@ -130,11 +129,11 @@ export async function UpdateAvalabiltyAction(formdata: FormData) {
                 data:{
                     isActive: item.isActive,
                     fromTime: item.fromTime,
-                    tillTime: item.tillTime
+                    tillTime: item.tillTime,
+                    timeZone: timeZone // update timeZone for each row
                 }
              }))
         )
-
         revalidatePath("/dashboard/availability");
     }catch(e){
         console.log("Error",e);
